@@ -10,7 +10,6 @@ using std::ostream;
 using std::string;
 using std::vector;
 
-double NeuralNetwork::mutation_rate = 0.02;
 vector<int> NeuralNetwork::structure = std::vector<int>();
 
 NeuralNetwork::NeuralNetwork() {}
@@ -65,9 +64,12 @@ ostream& operator<<(ostream &out, const NeuralNetwork &nn) {
         for (size_t n = 0; n < nn.layers[l].neurons.size(); n++) {
             out << "\tNeuron " << n << ": ";
             for (size_t w = 0; w < nn.layers[l].neurons[n].weights.size(); w++) {
-                out << " | " << nn.layers[l].neurons[n].weights[w] << " | ";
+                string weight = std::to_string(nn.layers[l].neurons[n].weights[w]);
+                if (weight[0] != '-' ) weight = " " + weight;
+                while (weight.size() < 10) weight += '0';
+                out << " | " << weight;
             }
-            out << endl;
+            out << '\n';
         }
         out << endl;
     }

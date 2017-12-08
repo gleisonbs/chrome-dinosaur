@@ -19,7 +19,6 @@ public:
     std::vector<Neuron>::iterator end() { return this->neurons.end(); }
     std::vector<Neuron>::const_iterator begin() const { return this->neurons.begin(); }
     std::vector<Neuron>::const_iterator end() const { return this->neurons.end(); }
-private:
 };
 
 #endif // LAYER_HPP

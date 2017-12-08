@@ -20,7 +20,6 @@ public:
     double fitness = 0;
     std::vector<Layer> layers;
 
-    static double mutation_rate;
     static std::vector<int> structure;
 
     friend std::ostream& operator<<(std::ostream&, const NeuralNetwork&);

@@ -1,8 +1,7 @@
 #ifndef SCREEN_READER_HPP
 #define SCREEN_READER_HPP
 
-#include <gtkmm.h>
-#include <gdkmm.h>
+#include <X11/Xutil.h>
 
 struct Obstacle {
     Obstacle() { this->distance=0; this->size=0; }
@@ -18,14 +17,18 @@ struct Obstacle {
 
 class ScreenReader {
 public:
-    ScreenReader(int, char**);
+    ScreenReader();
+    ~ScreenReader();
     Obstacle next_obstacle();
     bool is_game_over();
 
 private:
-    Glib::RefPtr<Gdk::Screen> screen;
-    Glib::RefPtr<Gdk::Drawable> win;
-    Glib::RefPtr<Gdk::Pixbuf> pb;
+    void find_ground();
+    
+    Display *display;
+    int ground_extension = 600;
+    int ground_start_x = 0;
+    int ground_start_y = 0;
 };
 
 #endif // SCREEN_READER_HPP

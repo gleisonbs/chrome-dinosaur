@@ -10,15 +10,17 @@
 
 class Keyboard {
 public:
-    static bool press(std::string, int=0);
-    static bool release(std::string);
-    static void start_new_game();
-    static void reload_page();
+    Keyboard();
+    ~Keyboard();
+    bool press(std::string, int=0);
+    bool release(std::string);
+    void start_new_game();
+    void reload_page();
 private:
-    static std::string previous_key;
-    static std::chrono::steady_clock::time_point press_clock;
-    static int press_time;
-    static Display *display;
+    std::string previous_key;
+    std::chrono::steady_clock::time_point press_clock;
+    int press_time;
+    Display *display;
 };
 
 #endif // KEY_OUTPUT_HPP

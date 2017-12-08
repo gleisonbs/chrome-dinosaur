@@ -1,7 +1,7 @@
 CXX = g++
-OBJS = main.o neural_network.o key_output.o screen_reader.o population.o neuron.o layer.o
-FLAGS = -std=c++14 -Wall -Werror -g -lX11 -lXtst `pkg-config gtkmm-2.4 --cflags --libs`
-
+OBJS = main.o neural_network.o key_output.o screen_reader.o population.o neuron.o layer.o session.o
+FLAGS = -std=c++14 -Wall -Werror -g -lX11 -lXtst
+# `pkg-config gtkmm-2.4 --cflags --libs`
 all: dinosaur
 
 dinosaur: $(OBJS)
@@ -20,6 +20,9 @@ screen_reader.o: screen_reader.cpp screen_reader.hpp
 	$(CXX) $(FLAGS) -c $^
 
 population.o: population.cpp population.hpp
+	$(CXX) $(FLAGS) -c $^
+
+session.o: session.cpp session.hpp
 	$(CXX) $(FLAGS) -c $^
 
 neural_network.o: neural_network.cpp neural_network.hpp

@@ -17,7 +17,6 @@ public:
     std::vector<double>::iterator end() { return this->weights.end(); }
     std::vector<double>::const_iterator begin() const { return this->weights.begin(); }
     std::vector<double>::const_iterator end() const { return this->weights.end(); }
-private:
 };
 
 #endif // NEURON_HPP

@@ -4,14 +4,28 @@
 #include "population.hpp"
 
 using std::accumulate;
+using std::cout;
+using std::endl;
 using std::max_element;
 using std::random_device;
+using std::ostream;
 using std::uniform_int_distribution;
 using std::uniform_real_distribution;
 using std::vector;
 
-Population::Population(int size) {
-    this->size = size;
+Population::Population() {}
+
+Population::Population(const Population& p) {
+    this->size_ = p.size_;
+    this->mutation_rate_ = p.mutation_rate_;
+    this->current_generation_ = p.current_generation_;
+    this->population = p.population;
+}
+
+Population::Population(int size, double mutation_rate) {
+    this->size_ = size;
+    this->mutation_rate_ = mutation_rate;
+    this->current_generation_ = 1;
     for (int i = 0; i < size; i++) {
         this->population.push_back(NeuralNetwork(NeuralNetwork::structure));
     }
@@ -47,7 +61,7 @@ void Population::mutate(NeuralNetwork &nn) {
     for (auto &layer : nn) {
         for (auto &neuron : layer)
             for (auto &weight : neuron)
-                if (random_chance(rd) < NeuralNetwork::mutation_rate)
+                if (random_chance(rd) < this->mutation_rate_)
                     weight = random_gene(rd);
     }
 }
@@ -79,13 +93,28 @@ void Population::make_population() {
     NeuralNetwork fittest_nn = this->fittest_member(); // ELITISM
     descendents.push_back(fittest_nn); // ELITISM
 
-    while (descendents.size() < this->size) {
+    while (descendents.size() < this->size_) {
         NeuralNetwork child = this->crossover(this->pick_parent(), this->pick_parent());
         this->mutate(child);
         descendents.push_back(child);
     }
 
-    this->population.clear();
-    this->population.shrink_to_fit();
     this->population = descendents;
+    this->current_generation_++;
+}
+
+ostream& operator<<(ostream &out, const Population &p) {
+    out << "Population\n"
+         << "\tSize: " << p.size() << '\n'
+         << "\tSize: " << p.mutation_rate() << '\n'
+         << "\tGeneration: " << p.generation() << '\n';
+
+         int member = 1;
+         for (auto &nn : p) {
+             out << "member " << member++ << '\n';
+             out << nn;
+         }
+         out << endl;
+
+    return out;
 }
