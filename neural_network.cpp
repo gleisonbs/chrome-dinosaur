@@ -14,6 +14,7 @@ vector<int> NeuralNetwork::structure = std::vector<int>();
 
 NeuralNetwork::NeuralNetwork() {}
 NeuralNetwork::NeuralNetwork(const NeuralNetwork &nn) {
+    this->fitness_ = nn.fitness_;
     this->layers = nn.layers;
 }
 
@@ -28,6 +29,8 @@ void NeuralNetwork::set_structure(const std::vector<int> &s) {
 
 double NeuralNetwork::sigmoid(double v) {
     return 1/(1+exp(-v));
+    // ALTERNATIVE:
+    //return v / (1 + abs(v))
 }
 
 vector<double> NeuralNetwork::decision(vector<double> inputs) {

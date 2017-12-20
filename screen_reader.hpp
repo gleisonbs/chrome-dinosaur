@@ -12,7 +12,6 @@ struct Obstacle {
 
     double distance;
     double size;
-    double speed;
 };
 
 class ScreenReader {
@@ -24,7 +23,7 @@ public:
 
 private:
     void find_ground();
-    
+
     Display *display;
     int ground_extension = 600;
     int ground_start_x = 0;

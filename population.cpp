@@ -6,6 +6,7 @@
 using std::accumulate;
 using std::cout;
 using std::endl;
+using std::max;
 using std::max_element;
 using std::random_device;
 using std::ostream;
@@ -20,12 +21,16 @@ Population::Population(const Population& p) {
     this->mutation_rate_ = p.mutation_rate_;
     this->current_generation_ = p.current_generation_;
     this->population = p.population;
+    this->best_overall_ = p.best_overall_;
+    this->current_generation_ = p.best_current_generation_;
 }
 
 Population::Population(int size, double mutation_rate) {
     this->size_ = size;
     this->mutation_rate_ = mutation_rate;
     this->current_generation_ = 1;
+    this->best_overall_ = 0;
+    this->best_current_generation_ = 0;
     for (int i = 0; i < size; i++) {
         this->population.push_back(NeuralNetwork(NeuralNetwork::structure));
     }
@@ -33,11 +38,11 @@ Population::Population(int size, double mutation_rate) {
 
 NeuralNetwork Population::fittest_member() {
     return *max_element(this->population.begin(), this->population.end(),
-                        [](NeuralNetwork &d1, NeuralNetwork &d2) { return d1.fitness < d2.fitness; });
+                        [](NeuralNetwork &d1, NeuralNetwork &d2) { return d1.fitness_ < d2.fitness_; });
 }
 
 long Population::fitness_sum() {
-    return accumulate(this->population.begin(), this->population.end(), 0, [](int sum, NeuralNetwork &d){ return sum + d.fitness; });
+    return accumulate(this->population.begin(), this->population.end(), 0, [](int sum, NeuralNetwork &d){ return sum + d.fitness_; });
 }
 
 NeuralNetwork Population::pick_parent() {
@@ -45,10 +50,10 @@ NeuralNetwork Population::pick_parent() {
     uniform_int_distribution<int> fitness_distribution(0, this->fitness_sum());
     long random_pick = fitness_distribution(rd);
     for (auto &nn : this->population)
-        if (random_pick <= nn.fitness)
+        if (random_pick <= nn.fitness_)
             return nn;
         else
-            random_pick -= nn.fitness;
+            random_pick -= nn.fitness_;
 
     return NeuralNetwork();
 }
@@ -91,6 +96,7 @@ void Population::make_population() {
     vector<NeuralNetwork> descendents;
 
     NeuralNetwork fittest_nn = this->fittest_member(); // ELITISM
+
     descendents.push_back(fittest_nn); // ELITISM
 
     while (descendents.size() < this->size_) {
@@ -99,6 +105,9 @@ void Population::make_population() {
         descendents.push_back(child);
     }
 
+    this->best_current_generation_ = fittest_nn.fitness_;
+    this->best_overall_ = max(this->best_overall_, this->best_current_generation_);
+
     this->population = descendents;
     this->current_generation_++;
 }
@@ -106,8 +115,10 @@ void Population::make_population() {
 ostream& operator<<(ostream &out, const Population &p) {
     out << "Population\n"
          << "\tSize: " << p.size() << '\n'
-         << "\tSize: " << p.mutation_rate() << '\n'
-         << "\tGeneration: " << p.generation() << '\n';
+         << "\tMutation rate: " << p.mutation_rate() << '\n'
+         << "\tGeneration: " << p.generation() << '\n'
+         << "\tBest of this generation: " << p.best_current_generation() << '\n'
+         << "\tBest overall: " << p.best_overall() << '\n';
 
          int member = 1;
          for (auto &nn : p) {

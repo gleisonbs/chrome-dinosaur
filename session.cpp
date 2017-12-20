@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 
@@ -8,10 +9,19 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 using std::ofstream;
+using std::remove;
 using std::string;
+using std::to_string;
 
 void save_session(const Population &p, const std::vector<int>& s) {
-    ofstream out("session.txt", std::ofstream::out);
+    string m_rate = to_string(p.mutation_rate());
+    m_rate.erase(remove(m_rate.begin(), m_rate.end(), '.'), m_rate.end());
+    string session_name =
+        "session_" + std::to_string(p.size()) +
+        "_" + m_rate +
+        "_" + std::to_string(p.generation()) + ".txt";
+    cout << "\nSaving session file: " << session_name << endl;
+    ofstream out(session_name, std::ofstream::out);
 
     out << p.size() << " "
         << p.mutation_rate() << " "
@@ -36,8 +46,8 @@ void save_session(const Population &p, const std::vector<int>& s) {
     out.close();
 }
 
-Population load_session() {
-    ifstream in("session.txt", std::ios::in);
+Population load_session(const string &session_name) {
+    ifstream in(session_name, std::ios::in);
 
     int size;
     in >> size;

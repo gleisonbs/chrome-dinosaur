@@ -14,10 +14,10 @@ ScreenReader::~ScreenReader() {
 }
 
 bool ScreenReader::is_game_over() {
-    int x_start = 385;
-    int x_end = 565;
+    int x_start = this->ground_start_x + 205;
+    int x_end = this->ground_start_x + 385;
     int x_size = x_end - x_start;
-    int y_height = 190;
+    int y_height = this->ground_start_y - 83;
 
     XImage *image;
     image = XGetImage(display, RootWindow(display, DefaultScreen(display)),
@@ -65,7 +65,7 @@ Obstacle ScreenReader::next_obstacle() {
     }
 
     XDestroyImage(image);
-    return Obstacle(obstacle_start/1000, obstacle_size);
+    return Obstacle(obstacle_start/1000, obstacle_size/100);
 }
 
 void ScreenReader::find_ground() {
@@ -73,8 +73,8 @@ void ScreenReader::find_ground() {
 
     constexpr int x_start = 0;
     constexpr int y_start = 0;
-    constexpr int x_end = 800;
-    constexpr int y_end = 800;
+    constexpr int x_end = 3840;
+    constexpr int y_end = 1080;
 
     XImage *image;
     image = XGetImage(this->display, RootWindow(display, DefaultScreen(this->display)),
