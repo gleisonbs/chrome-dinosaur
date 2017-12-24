@@ -25,13 +25,13 @@ Population::Population(const Population& p) {
     this->current_generation_ = p.best_current_generation_;
 }
 
-Population::Population(int size, double mutation_rate) {
+Population::Population(long size, double mutation_rate) {
     this->size_ = size;
     this->mutation_rate_ = mutation_rate;
     this->current_generation_ = 1;
     this->best_overall_ = 0;
     this->best_current_generation_ = 0;
-    for (int i = 0; i < size; i++) {
+    for (long i = 0; i < size; i++) {
         this->population.push_back(NeuralNetwork(NeuralNetwork::structure));
     }
 }
@@ -42,7 +42,7 @@ NeuralNetwork Population::fittest_member() {
 }
 
 long Population::fitness_sum() {
-    return accumulate(this->population.begin(), this->population.end(), 0, [](int sum, NeuralNetwork &d){ return sum + d.fitness_; });
+    return accumulate(this->population.begin(), this->population.end(), 0, [](long sum, NeuralNetwork &d){ return sum + d.fitness_; });
 }
 
 NeuralNetwork Population::pick_parent() {
@@ -74,7 +74,7 @@ void Population::mutate(NeuralNetwork &nn) {
 NeuralNetwork Population::crossover(const NeuralNetwork &parent1, const NeuralNetwork &parent2) {
     NeuralNetwork nn(parent1);
 
-    int number_of_genes = 0;
+    long number_of_genes = 0;
     for (auto &layer : parent1)
         for (auto &neuron : layer)
             number_of_genes += neuron.weights.size();
@@ -82,7 +82,7 @@ NeuralNetwork Population::crossover(const NeuralNetwork &parent1, const NeuralNe
     random_device rd;
     uniform_int_distribution<int> random_gene(0, number_of_genes);
 
-    int crossover_gene = random_gene(rd);
+    long crossover_gene = random_gene(rd);
     for (size_t l = 0; l < parent2.layers.size(); l++)
         for (size_t n = 0; n < parent2.layers[l].neurons.size(); n++)
             for (size_t w = 0; w < parent2.layers[l].neurons[n].weights.size(); w++)
@@ -120,7 +120,7 @@ ostream& operator<<(ostream &out, const Population &p) {
          << "\tBest of this generation: " << p.best_current_generation() << '\n'
          << "\tBest overall: " << p.best_overall() << '\n';
 
-         int member = 1;
+         long member = 1;
          for (auto &nn : p) {
              out << "member " << member++ << '\n';
              out << nn;

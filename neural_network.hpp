@@ -17,7 +17,7 @@ public:
 
     static void set_structure(const std::vector<int>&);
 
-    int fitness_ = 0;
+    long fitness_ = 0;
     std::vector<Layer> layers;
 
     static std::vector<int> structure;
